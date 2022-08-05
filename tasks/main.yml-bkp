@@ -1,0 +1,24 @@
+---
+  - name: Create Installation directory
+    file: path=/opt/atlassian/bitbucket state=directory mode=0755  group=bitbucket owner=bitbucket
+
+  - name: Create Installation directory
+    file: path=/var/atlassian/bitbucket state=directory mode=0755  group=bitbucket owner=bitbucket
+
+  - name: Download Bitbucket
+    get_url:
+      url: https://www.atlassian.com/software/stash/downloads/binary/atlassian-bitbucket-5.7.4.tar.gz
+      dest: /opt/atlassian/bitbucket
+      mode: '0755'
+
+  - name: Exract Bitbucket
+    command: tar zxf /opt/atlassian/bitbucket/atlassian-bitbucket-5.7.4.tar.gz -C /opt/atlassian/bitbucket
+
+  - name: copy the executable file set-bitbucket-home.sh file to this directory
+    copy: src=./templates/set-bitbucket-home.sh dest=/opt/atlassian/bitbucket/atlassian-bitbucket-5.7.4/bin owner=bitbucket group=bitbucket mode=0755
+
+  - name: copy the executable file set-bitbucket-home.sh file to this directory
+    copy: src=./templates/set-jre-home.sh dest=/opt/atlassian/bitbucket/atlassian-bitbucket-5.7.4/bin owner=bitbucket group=bitbucket mode=0755
+
+  - name: start the script
+    command: bash /opt/atlassian/bitbucket/atlassian-bitbucket-5.7.4/bin/start-bitbucket.sh

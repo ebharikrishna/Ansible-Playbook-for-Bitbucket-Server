@@ -1,0 +1,46 @@
+---
+  - name: Create Installation directory
+    file: path=/opt/atlassian/bitbucket state=directory mode=0755  group=bitbucket owner=bitbucket
+  - name: Create Installation directory
+
+    file: path=/var/atlassian/bitbucket state=directory mode=0755  group=bitbucket owner=bitbucket
+
+  - name: Create Java directory
+
+    file: path=/opt/JAVA state=directory mode=0755  group=bitbucket owner=bitbucket
+  - name: Download Java
+    get_url:
+      url: https://builds.openlogic.com/downloadJDK/openlogic-openjdk/8u332-b09/openlogic-openjdk-8u332-b09-linux-x64.tar.gz
+      dest: /opt/JAVA
+      mode: '0755'
+  - name: Extract downloaded file
+#    unarchive:
+#      src: /opt/JAVA/openlogic-openjdk-8u332-b09-linux-x64.tar.gz
+#      dest: /opt/JAVA
+    command: tar zxf  /opt/JAVA/openlogic-openjdk-8u332-b09-linux-x64.tar.gz -C /opt/JAVA
+#  - name: Set Environment variable
+#    shell:
+#      - export /opt/JAVA/jdk-18.0.1.1
+#      - echo PATH=${PATH}:/opt/JAVA/jdk-18.0.1.1>~/.bash_profile
+  - name: Download Bitbucket
+    get_url:
+      url: https://www.atlassian.com/software/stash/downloads/binary/atlassian-bitbucket-5.7.4.tar.gz
+      dest: /opt/atlassian/bitbucket
+      mode: '0755'
+  - name: Exract Bitbucket
+#    unarchive:
+    command: tar zxf /opt/atlassian/bitbucket/atlassian-bitbucket-5.7.4.tar.gz -C /opt/atlassian/bitbucket
+#    dest: /opt/atlassian/bitbucket
+#      mode: '0755'
+  - name: copy the executable file set-bitbucket-home.sh file to this directory
+    copy: src=./templates/set-bitbucket-home.sh dest=/opt/atlassian/bitbucket/atlassian-bitbucket-5.7.4/bin owner=bitbucket group=bitbucket mode=0755
+
+  - name: copy the executable file set-bitbucket-home.sh file to this directory
+    copy: src=./templates/set-jre-home.sh dest=/opt/atlassian/bitbucket/atlassian-bitbucket-5.7.4/bin owner=bitbucket group=bitbucket mode=0755
+
+#  - name: Configure JAVA_HOME in startup script
+#    shell: |
+#        echo 'JAVA_HOME="/opt/JAVA/jdk-18.0.1.1"; export JAVA_HOME' >> /opt/atlassian/bitbucket/atlassian-bitbucket-5.7.4/bin/set-jre-home.sh
+
+  - name: start the script
+    command: bash /opt/atlassian/bitbucket/atlassian-bitbucket-5.7.4/bin/start-bitbucket.sh
